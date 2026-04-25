@@ -1,0 +1,13 @@
+gitignore
+# OneDrive temp files
+*.tmp
+~$*
+desktop.ini
+Thumbs.db
+
+# VSCode local settings
+.vscode/settings.json
+.vscode/*.code-workspace
+
+# Windows
+$RECYCLE.BIN/
