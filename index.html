@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IT Tools Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0c10;
+    --surface: #111318;
+    --surface2: #181c24;
+    --border: #1e2430;
+    --accent-blue: #2f7cf6;
+    --accent-cyan: #00d4ff;
+    --accent-green: #00e57a;
+    --accent-orange: #ff7a2f;
+    --accent-purple: #9f6fff;
+    --text: #e8ecf4;
+    --text-muted: #6b7896;
+    --text-dim: #3a4260;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Syne', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Noise overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,12,16,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.1rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .logo-icon {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.8rem;
+    font-family: var(--mono);
+    color: #fff;
+    font-weight: 700;
+  }
+  .logo span { color: var(--accent-cyan); }
+
+  .header-meta {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    display: flex; align-items: center; gap: 16px;
+  }
+  .status-dot {
+    width: 6px; height: 6px;
+    background: var(--accent-green);
+    border-radius: 50%;
+    display: inline-block;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 3rem 2rem 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(47,124,246,0.1);
+    border: 1px solid rgba(47,124,246,0.3);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--accent-blue);
+    margin-bottom: 1rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .hero h1 {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+  }
+  .hero h1 em {
+    font-style: normal;
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    max-width: 500px;
+    line-height: 1.6;
+  }
+
+  /* ── SEARCH ── */
+  .search-bar {
+    max-width: 1200px;
+    margin: 1.5rem auto 0;
+    padding: 0 2rem;
+    position: relative;
+    z-index: 1;
+  }
+  .search-inner {
+    position: relative;
+    max-width: 480px;
+  }
+  .search-inner input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 16px 10px 40px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .search-inner input:focus {
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 3px rgba(47,124,246,0.1);
+  }
+  .search-inner input::placeholder { color: var(--text-dim); }
+  .search-icon {
+    position: absolute;
+    left: 12px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    pointer-events: none;
+  }
+
+  /* ── MAIN LAYOUT ── */
+  main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── CATEGORY SECTION ── */
+  .category-section {
+    margin-bottom: 3rem;
+    animation: fadeUp 0.5s ease both;
+  }
+  .category-section:nth-child(1) { animation-delay: 0.05s; }
+  .category-section:nth-child(2) { animation-delay: 0.1s; }
+  .category-section:nth-child(3) { animation-delay: 0.15s; }
+  .category-section:nth-child(4) { animation-delay: 0.2s; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .cat-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .cat-icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+  .cat-title {
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .cat-count {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--text-dim);
+    margin-left: auto;
+  }
+
+  /* ── TOOL GRID ── */
+  .tool-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+  }
+
+  .tool-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.1rem 1rem;
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s, background 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+    overflow: hidden;
+  }
+  .tool-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 60%, var(--card-accent, rgba(47,124,246,0.04)));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .tool-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--card-color, var(--accent-blue));
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4), 0 0 0 1px var(--card-color, var(--accent-blue));
+    background: var(--surface2);
+  }
+  .tool-card:hover::before { opacity: 1; }
+
+  .tool-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.6rem;
+    font-family: var(--mono);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background: var(--badge-bg, rgba(47,124,246,0.12));
+    color: var(--badge-color, var(--accent-blue));
+    width: fit-content;
+  }
+
+  .tool-name {
+    font-size: 0.82rem;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+  .tool-desc {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    font-weight: 400;
+  }
+  .tool-arrow {
+    margin-top: auto;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    transition: color 0.2s, transform 0.2s;
+    display: flex; align-items: center; gap: 4px;
+    font-family: var(--mono);
+  }
+  .tool-card:hover .tool-arrow {
+    color: var(--card-color, var(--accent-blue));
+    transform: translateX(4px);
+  }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+  }
+  .modal-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    width: 100%;
+    max-width: 640px;
+    max-height: 85vh;
+    overflow-y: auto;
+    transform: scale(0.95) translateY(20px);
+    transition: transform 0.25s;
+  }
+  .modal-overlay.open .modal { transform: scale(1) translateY(0); }
+
+  .modal-header {
+    padding: 1.5rem 1.5rem 1rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .modal-title { font-size: 1.1rem; font-weight: 700; }
+  .modal-subtitle { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
+  .modal-close {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: 1rem;
+    transition: color 0.2s, border-color 0.2s;
+    flex-shrink: 0;
+  }
+  .modal-close:hover { color: var(--text); border-color: var(--text-muted); }
+  .modal-body { padding: 1.5rem; }
+
+  /* Calculator styles */
+  .calc-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  .calc-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    min-width: 180px;
+  }
+  .calc-input {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    width: 140px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .calc-input:focus { border-color: var(--accent-blue); }
+  .calc-select {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    width: 140px;
+    outline: none;
+    cursor: pointer;
+  }
+  .calc-btn {
+    width: 100%;
+    padding: 10px;
+    background: var(--accent-blue);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-family: var(--sans);
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+    margin-top: 0.5rem;
+  }
+  .calc-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+  .result-box {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+    margin-top: 1rem;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    line-height: 2;
+    display: none;
+  }
+  .result-box.show { display: block; }
+  .result-line { display: flex; justify-content: space-between; }
+  .result-line.total {
+    border-top: 1px solid var(--border);
+    margin-top: 4px;
+    padding-top: 4px;
+    font-weight: 700;
+    color: var(--accent-cyan);
+  }
+
+  /* Links grid */
+  .links-grid {
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .link-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--text);
+    font-size: 0.8rem;
+    transition: border-color 0.2s, background 0.2s;
+    gap: 10px;
+  }
+  .link-item:hover {
+    border-color: var(--accent-blue);
+    background: var(--surface2);
+  }
+  .link-item-left { display: flex; align-items: center; gap: 10px; }
+  .link-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .link-name { font-weight: 600; }
+  .link-url { font-family: var(--mono); font-size: 0.65rem; color: var(--text-dim); }
+  .link-arrow-r { color: var(--text-dim); font-size: 0.8rem; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 1.5rem 2rem;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── HIDDEN ── */
+  .hidden { display: none !important; }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">IT</div>
+    IT Tools <span>Hub</span>
+  </div>
+  <div class="header-meta">
+    <span><span class="status-dot"></span> Online</span>
+    <span>v1.0.0</span>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-tag">⚡ Internal IT Toolkit</div>
+  <h1>Công cụ & <em>Tiện ích IT</em></h1>
+  <p>Tổng hợp calculators, sizing tools và quick links cho Microsoft, VMware & Veeam. Không cần đăng nhập, chạy offline.</p>
+</div>
+
+<div class="search-bar">
+  <div class="search-inner">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="Tìm tool... (e.g. CAL, vCPU, backup)" oninput="filterTools(this.value)">
+  </div>
+</div>
+
+<main id="mainContent">
+
+  <!-- ══════════ MICROSOFT ══════════ -->
+  <div class="category-section" data-cat="microsoft">
+    <div class="cat-header">
+      <div class="cat-icon" style="background:rgba(0,120,212,0.15);">🪟</div>
+      <div class="cat-title" style="color:#2196f3;">Microsoft</div>
+      <div class="cat-count">6 tools</div>
+    </div>
+    <div class="tool-grid">
+
+      <div class="tool-card" style="--card-color:#2196f3;--card-accent:rgba(33,150,243,0.06);"
+           onclick="openModal('ms-cal')">
+        <span class="tool-badge" style="--badge-bg:rgba(33,150,243,0.12);--badge-color:#2196f3;">CALCULATOR</span>
+        <div class="tool-name">Windows Server CAL Calculator</div>
+        <div class="tool-desc">Tính số CAL cần thiết theo users/devices</div>
+        <div class="tool-arrow">→ Mở tool</div>
+      </div>
+
+      <div class="tool-card" style="--card-color:#2196f3;--card-accent:rgba(33,150,243,0.06);"
+           onclick="openModal('ms-sql')">
+        <span class="tool-badge" style="--badge-bg:rgba(33,150,243,0.12);--badge-color:#2196f3;">CALCULATOR</span>
+        <div class="tool-name">SQL Server Core Licensing</div>
+        <div class="tool-desc">Ước tính cores cần license cho SQL Server</div>
+        <div class="tool-arrow">→ Mở tool</div>
+      </div>
+
+      <div class="tool-card" style="--card-color:#2196f3;--card-accent:rgba(33,150,243,0.06);"
+           onclick="openModal('ms-365')">
+        <span class="tool-badge" style="--badge-bg:rgba(33,150,243,0.12);--badge-color:#2196f3;">CALCULATOR</span>
+        <div class="tool-name">Microsoft 365 License Cost</div>
+        <div class="tool-desc">So sánh chi phí M365 Business / Enterprise</div>
+        <div class="tool-arrow">→ Mở tool</div>
+      </div>
+
+      <div class="tool-card" style="--card-color:#2196f3;--card-accent:rgba(33,150,243,0.06);"
+           onclick="openModal('ms-links')">
+        <span class="tool-badge" style="--badge-bg:rgba(33,150,243,0.12);--badge-color:#2196f3;">QUICK LINKS</span>
+        <div class="tool-name">Microsoft Portals & Docs</div>
+        <div class="tool-desc">Azure Portal, Admin Center, VLSC, Docs...</div>
+        <div class="tool-arrow">→ Xem links</div>
+      </div>
+
+      <div class="tool-card" style="--card-color:#2196f3;--card-accent:rgba(33,150,243,0.06);"
+           onclick="openModal('ms-iops')">
+        <span class="tool-badge" style="--badge-bg:rgba(33,150,243,0.12);--badge-color:#2196f3;">SIZING</span>
+        <div class="tool-name">Windows Server RAM Estimator</div>
+        <div class="tool-desc">Ước tính RAM theo số roles và workload</div>
+        <div class="tool-arrow">→ Mở tool</div>
+      </div>
+
+      <div class="tool-card" style="--card-color:#2196f3;--card-accent:rgba(33,150,243,0.06);"
+           onclick="openModal('ms-rds')">
+        <span class="tool-badge" style="--badge-bg:rgba(33,150,243,0.12);--badge-color:#2196f3;">SIZING</span>
+        <div class="tool-name">RDS / VDI User Sizing</div>
+        <div class="tool-desc">Tính tài nguyên cho Remote Desktop Services</div>
+        <div class="tool-arrow">→ Mở tool</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════ VMWARE / VIRTUALIZATION ══════════ -->
+  <div class="category-section" data-cat="vmware">
+    <div class="cat-header">
+      <div class="cat-icon" style="background:rgba(105,179,46,0.15);">🖥️</div>
+      <div class="cat-title" style="color:#69b32e;">VMware / Virtualization</div>
+      <div class="cat-count">5 tools</div>
+    </div>
+    <div class="tool-grid">
+
+      <div class="tool-card" style="--card-color:#69b32e;--card-accent:rgba(105,179,46,0.06);"
+           onclick="openModal('vm-cpu')">
+        <span class="tool-badge" style="--badge-bg:rgba(105,179,46,0.12);--badge-color:#69b32e;">SIZING</span>
+        <div class="tool-name">vCPU / pCPU Ratio Calculator</div>
+        <div class="tool-desc">Tính tỉ lệ vCPU:pCPU và host capacity</div>
+        <div class="tool-arrow">→ Mở tool</div>
+      </div>
+
+      <div class="tool-card" style="--card-color:#69b32e;--card-accent:rgba(105,179,46,0.06);"
+           onclick="openModal('vm-mem')">
+        <span class="tool-badge" style="--badge-bg:rgba(105,179,46,0.12);--badge-color:#69b32e;">SIZING</span>
+        <div class="tool-name">ESXi Memory Overhead Calc</div>
+        <div class="tool-desc">Tính memory overhead cho VMs trên ESXi host</div>
+        <div class="tool-arrow">→ Mở tool</div>
+      </div>
+
+      <div class="tool-card" style="--card-color:#69b32e;--card-accent:rgba(105,179,46,0.06);"
+           onclick="openModal('vm-cluster')">
+        <span class="tool-badge" style="--badge-bg:rgba(105,179,46,0.12);--badge-color:#69b32e;">SIZING</span>
+        <div class="tool-name">vSphere Cluster N+1 Sizing</div>
+        <div class="tool-desc">Tính số host cần thiết theo HA policy</div>
+        <div class="tool-arrow">→ Mở tool</div>
+      </div>
+
+      <div class="tool-card" style="--card-color:#69b32e;--card-accent:rgba(105,179,46,0.06);"
+           onclick="openModal('vm-storage')">
+        <span class="tool-badge" style="--badge-bg:rgba(105,179,46,0.12);--badge-color:#69b32e;">SIZING</span>
+        <div class="tool-name">VM Storage Estimator</div>
+        <div class="tool-desc">Ước tính dung lượng datastore cần thiết</div>
+        <div class="tool-arrow">→ Mở tool</div>
+      </div>
+
+      <div class="tool-card" style="--card-color:#69b32e;--card-accent:rgba(105,179,46,0.06);"
+           onclick="openModal('vm-links')">
+        <span class="tool-badge" style="--badge-bg:rgba(105,179,46,0.12);--badge-color:#69b32e;">QUICK LINKS</span>
+        <div class="tool-name">VMware / Broadcom Portals</div>
+        <div class="tool-desc">Customer Connect, Compatibility Guide, Docs...</div>
+        <div class="tool-arrow">→ Xem links</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════ VEEAM ══════════ -->
+  <div class="category-section" data-cat="veeam">
+    <div class="cat-header">
+      <div class="cat-icon" style="background:rgba(0,163,77,0.15);">💾</div>
+      <div class="cat-title" style="color:#00a34d;">Veeam Backup</div>
+      <div class="cat-count">4 tools</div>
+    </div>
+    <div class="tool-grid">
+
+      <div class="tool-card" style="--card-color:#00a34d;--card-accent:rgba(0,163,77,0.06);"
+           onclick="openModal('veeam-repo')">
+        <span class="tool-badge" style="--badge-bg:rgba(0,163,77,0.12);--badge-color:#00a34d;">SIZING</span>
+        <div class="tool-name">Backup Repository Sizing</div>
+        <div class="tool-desc">Tính dung lượng repo theo retention & change rate</div>
+        <div class="tool-arrow">→ Mở tool</div>
+      </div>
+
+      <div class="tool-card" style="--card-color:#00a34d;--card-accent:rgba(0,163,77,0.06);"
+           onclick="openModal('veeam-proxy')">
+        <span class="tool-badge" style="--badge-bg:rgba(0,163,77,0.12);--badge-color:#00a34d;">SIZING</span>
+        <div class="tool-name">Proxy Server Sizing</div>
+        <div class="tool-desc">Số proxy cần thiết theo số VMs và backup window</div>
+        <div class="tool-arrow">→ Mở tool</div>
+      </div>
+
+      <div class="tool-card" style="--card-color:#00a34d;--card-accent:rgba(0,163,77,0.06);"
+           onclick="openModal('veeam-rpo')">
+        <span class="tool-badge" style="--badge-bg:rgba(0,163,77,0.12);--badge-color:#00a34d;">CALCULATOR</span>
+        <div class="tool-name">RPO / RTO Estimator</div>
+        <div class="tool-desc">Ước tính RPO/RTO theo backup schedule</div>
+        <div class="tool-arrow">→ Mở tool</div>
+      </div>
+
+      <div class="tool-card" style="--card-color:#00a34d;--card-accent:rgba(0,163,77,0.06);"
+           onclick="openModal('veeam-links')">
+        <span class="tool-badge" style="--badge-bg:rgba(0,163,77,0.12);--badge-color:#00a34d;">QUICK LINKS</span>
+        <div class="tool-name">Veeam Portals & Resources</div>
+        <div class="tool-desc">My Veeam, KB, Best Practices, Downloads...</div>
+        <div class="tool-arrow">→ Xem links</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════ GENERAL ══════════ -->
+  <div class="category-section" data-cat="general">
+    <div class="cat-header">
+      <div class="cat-icon" style="background:rgba(159,111,255,0.15);">🛠️</div>
+      <div class="cat-title" style="color:#9f6fff;">General IT</div>
+      <div class="cat-count">3 tools</div>
+    </div>
+    <div class="tool-grid">
+
+      <div class="tool-card" style="--card-color:#9f6fff;--card-accent:rgba(159,111,255,0.06);"
+           onclick="openModal('gen-subnet')">
+        <span class="tool-badge" style="--badge-bg:rgba(159,111,255,0.12);--badge-color:#9f6fff;">NETWORK</span>
+        <div class="tool-name">Subnet / CIDR Calculator</div>
+        <div class="tool-desc">Tính network, broadcast, host range từ CIDR</div>
+        <div class="tool-arrow">→ Mở tool</div>
+      </div>
+
+      <div class="tool-card" style="--card-color:#9f6fff;--card-accent:rgba(159,111,255,0.06);"
+           onclick="openModal('gen-raid')">
+        <span class="tool-badge" style="--badge-bg:rgba(159,111,255,0.12);--badge-color:#9f6fff;">STORAGE</span>
+        <div class="tool-name">RAID Capacity Calculator</div>
+        <div class="tool-desc">Dung lượng thực tế theo RAID level</div>
+        <div class="tool-arrow">→ Mở tool</div>
+      </div>
+
+      <div class="tool-card" style="--card-color:#9f6fff;--card-accent:rgba(159,111,255,0.06);"
+           onclick="openModal('gen-bandwidth')">
+        <span class="tool-badge" style="--badge-bg:rgba(159,111,255,0.12);--badge-color:#9f6fff;">NETWORK</span>
+        <div class="tool-name">Bandwidth / Transfer Time</div>
+        <div class="tool-desc">Tính thời gian truyền dữ liệu theo băng thông</div>
+        <div class="tool-arrow">→ Mở tool</div>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+<footer>IT Tools Hub — Built for Internal Use · Static Web · No tracking · No data sent
+</footer>
+
+<!-- ════════════════════════════════ MODALS ════════════════════════════════ -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+  <div class="modal" id="modalBox">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="modalTitle"></div>
+        <div class="modal-subtitle" id="modalSubtitle"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+// ─── MODAL ───
+function openModal(id) {
+  const conf = MODALS[id];
+  if (!conf) return;
+  document.getElementById('modalTitle').textContent = conf.title;
+  document.getElementById('modalSubtitle').textContent = conf.subtitle || '';
+  document.getElementById('modalBody').innerHTML = conf.html;
+  document.getElementById('modalOverlay').classList.add('open');
+  if (conf.init) setTimeout(conf.init, 50);
+}
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// ─── SEARCH ───
+function filterTools(q) {
+  q = q.toLowerCase().trim();
+  document.querySelectorAll('.tool-card').forEach(card => {
+    const text = card.textContent.toLowerCase();
+    card.style.display = (!q || text.includes(q)) ? '' : 'none';
+  });
+  document.querySelectorAll('.category-section').forEach(sec => {
+    const visible = [...sec.querySelectorAll('.tool-card')].some(c => c.style.display !== 'none');
+    sec.style.display = visible ? '' : 'none';
+  });
+}
+
+// ─── HELPERS ───
+function fmt(n) { return Number(n).toLocaleString('vi-VN'); }
+function gb(n)  { return n >= 1024 ? (n/1024).toFixed(2)+' TB' : n.toFixed(0)+' GB'; }
+
+// ════════════ MODAL DEFINITIONS ════════════
+const MODALS = {
+
+  // ── MS CAL ──
+  'ms-cal': {
+    title: 'Windows Server CAL Calculator',
+    subtitle: 'Tính số CAL theo User hoặc Device',
+    html: `
+      <div class="calc-row"><span class="calc-label">Loại CAL</span>
+        <select class="calc-select" id="calType"><option value="user">User CAL</option><option value="device">Device CAL</option></select></div>
+      <div class="calc-row"><span class="calc-label">Số lượng Users / Devices</span>
+        <input class="calc-input" type="number" id="calQty" value="50" min="1"></div>
+      <div class="calc-row"><span class="calc-label">Phiên bản Windows Server</span>
+        <select class="calc-select" id="calVer"><option value="2022">2022</option><option value="2019">2019</option><option value="2016">2016</option></select></div>
+      <button class="calc-btn" onclick="calcCAL()">Tính CAL</button>
+      <div class="result-box" id="calResult"></div>`,
+  },
+
+  // ── MS SQL ──
+  'ms-sql': {
+    title: 'SQL Server Core Licensing',
+    subtitle: 'Ước tính số Core licenses cần mua',
+    html: `
+      <div class="calc-row"><span class="calc-label">Số physical servers</span>
+        <input class="calc-input" type="number" id="sqlServers" value="2" min="1"></div>
+      <div class="calc-row"><span class="calc-label">Cores / server (physical)</span>
+        <input class="calc-input" type="number" id="sqlCores" value="16" min="2"></div>
+      <div class="calc-row"><span class="calc-label">Edition</span>
+        <select class="calc-select" id="sqlEd">
+          <option value="enterprise">Enterprise</option>
+          <option value="standard">Standard</option></select></div>
+      <button class="calc-btn" onclick="calcSQL()">Tính Licenses</button>
+      <div class="result-box" id="sqlResult"></div>`,
+  },
+
+  // ── M365 ──
+  'ms-365': {
+    title: 'Microsoft 365 License Cost',
+    subtitle: 'So sánh chi phí theo gói và số lượng user (giá USD/user/tháng)',
+    html: `
+      <div class="calc-row"><span class="calc-label">Số users</span>
+        <input class="calc-input" type="number" id="m365Users" value="100" min="1"></div>
+      <div class="calc-row"><span class="calc-label">Gói</span>
+        <select class="calc-select" id="m365Plan">
+          <option value="6">Business Basic ($6)</option>
+          <option value="12.50">Business Standard ($12.50)</option>
+          <option value="22">Business Premium ($22)</option>
+          <option value="36">E3 ($36)</option>
+          <option value="57">E5 ($57)</option></select></div>
+      <button class="calc-btn" onclick="calcM365()">Tính chi phí</button>
+      <div class="result-box" id="m365Result"></div>`,
+  },
+
+  // ── MS LINKS ──
+  'ms-links': {
+    title: 'Microsoft Portals & Docs',
+    subtitle: 'Quick access tới các trang quan trọng của Microsoft',
+    html: `<div class="links-grid">
+      ${[
+        ['Azure Portal','https://portal.azure.com','Quản lý Azure resources','#2196f3'],
+        ['Microsoft 365 Admin','https://admin.microsoft.com','Admin center M365','#2196f3'],
+        ['Entra ID (Azure AD)','https://entra.microsoft.com','Identity & Access Management','#2196f3'],
+        ['VLSC – Volume Licensing','https://www.microsoft.com/licensing/servicecenter','Quản lý license doanh nghiệp','#2196f3'],
+        ['Microsoft Docs','https://docs.microsoft.com','Tài liệu kỹ thuật chính thức','#2196f3'],
+        ['Azure Pricing Calculator','https://azure.microsoft.com/en-us/pricing/calculator/','Ước tính chi phí Azure','#2196f3'],
+        ['Microsoft Download Center','https://www.microsoft.com/en-us/download','Tải phần mềm chính thức','#2196f3'],
+        ['Windows Server Lifecycle','https://docs.microsoft.com/en-us/lifecycle/products/?terms=windows+server','Vòng đời sản phẩm Windows Server','#2196f3'],
+      ].map(([name,url,desc,color])=>`
+        <a class="link-item" href="${url}" target="_blank">
+          <div class="link-item-left">
+            <div class="link-dot" style="background:${color}"></div>
+            <div><div class="link-name">${name}</div><div class="link-url">${desc}</div></div>
+          </div>
+          <span class="link-arrow-r">↗</span>
+        </a>`).join('')}
+    </div>`,
+  },
+
+  // ── MS RAM ──
+  'ms-iops': {
+    title: 'Windows Server RAM Estimator',
+    subtitle: 'Ước tính RAM tối thiểu theo roles và concurrent users',
+    html: `
+      <div class="calc-row"><span class="calc-label">AD Domain Services</span>
+        <select class="calc-select" id="ramAD"><option value="0">Không</option><option value="4">Có (+4 GB)</option></select></div>
+      <div class="calc-row"><span class="calc-label">DNS / DHCP</span>
+        <select class="calc-select" id="ramDNS"><option value="0">Không</option><option value="2">Có (+2 GB)</option></select></div>
+      <div class="calc-row"><span class="calc-label">IIS Web Server</span>
+        <select class="calc-select" id="ramIIS"><option value="0">Không</option><option value="4">Có (+4 GB)</option></select></div>
+      <div class="calc-row"><span class="calc-label">File Server (concurrent users)</span>
+        <input class="calc-input" type="number" id="ramFS" value="0" min="0"></div>
+      <div class="calc-row"><span class="calc-label">Hyper-V host (GB RAM VMs)</span>
+        <input class="calc-input" type="number" id="ramHV" value="0" min="0"></div>
+      <button class="calc-btn" onclick="calcRAM()">Ước tính RAM</button>
+      <div class="result-box" id="ramResult"></div>`,
+  },
+
+  // ── RDS ──
+  'ms-rds': {
+    title: 'RDS / VDI User Sizing',
+    subtitle: 'Tài nguyên cần thiết cho Remote Desktop Services',
+    html: `
+      <div class="calc-row"><span class="calc-label">Số concurrent users</span>
+        <input class="calc-input" type="number" id="rdsUsers" value="50" min="1"></div>
+      <div class="calc-row"><span class="calc-label">Loại workload</span>
+        <select class="calc-select" id="rdsLoad">
+          <option value="light">Light (Office, Email)</option>
+          <option value="medium">Medium (+ Browser)</option>
+          <option value="heavy">Heavy (+ Graphics/Dev)</option></select></div>
+      <button class="calc-btn" onclick="calcRDS()">Tính sizing</button>
+      <div class="result-box" id="rdsResult"></div>`,
+  },
+
+  // ── vCPU ──
+  'vm-cpu': {
+    title: 'vCPU / pCPU Ratio Calculator',
+    subtitle: 'Tính capacity và số VMs có thể chạy trên ESXi host',
+    html: `
+      <div class="calc-row"><span class="calc-label">Số physical cores / host</span>
+        <input class="calc-input" type="number" id="pcpu" value="32" min="1"></div>
+      <div class="calc-row"><span class="calc-label">vCPU : pCPU ratio</span>
+        <select class="calc-select" id="ratio">
+          <option value="4">4:1 (Conservative)</option>
+          <option value="6" selected>6:1 (Balanced)</option>
+          <option value="8">8:1 (Aggressive)</option>
+          <option value="10">10:1 (Dev/Test)</option></select></div>
+      <div class="calc-row"><span class="calc-label">vCPUs / VM (avg)</span>
+        <input class="calc-input" type="number" id="vcpuPerVM" value="4" min="1"></div>
+      <div class="calc-row"><span class="calc-label">Số ESXi hosts</span>
+        <input class="calc-input" type="number" id="numHosts" value="3" min="1"></div>
+      <button class="calc-btn" onclick="calcCPU()">Tính</button>
+      <div class="result-box" id="cpuResult"></div>`,
+  },
+
+  // ── ESXi MEM ──
+  'vm-mem': {
+    title: 'ESXi Memory Overhead Calculator',
+    subtitle: 'Tính tổng RAM cần thiết có tính overhead VMkernel',
+    html: `
+      <div class="calc-row"><span class="calc-label">Số VMs</span>
+        <input class="calc-input" type="number" id="vmCount" value="20" min="1"></div>
+      <div class="calc-row"><span class="calc-label">RAM / VM (GB, avg)</span>
+        <input class="calc-input" type="number" id="ramPerVM" value="8" min="1"></div>
+      <div class="calc-row"><span class="calc-label">ESXi overhead (MB / VM)</span>
+        <input class="calc-input" type="number" id="overhead" value="200" min="50"></div>
+      <div class="calc-row"><span class="calc-label">VMkernel reserve (GB)</span>
+        <input class="calc-input" type="number" id="vmkReserve" value="8" min="4"></div>
+      <button class="calc-btn" onclick="calcMem()">Tính RAM host</button>
+      <div class="result-box" id="memResult"></div>`,
+  },
+
+  // ── CLUSTER N+1 ──
+  'vm-cluster': {
+    title: 'vSphere Cluster N+1 Sizing',
+    subtitle: 'Số host cần thiết để đảm bảo HA policy',
+    html: `
+      <div class="calc-row"><span class="calc-label">Tổng vCPU cần chạy</span>
+        <input class="calc-input" type="number" id="totalVCPU" value="160" min="1"></div>
+      <div class="calc-row"><span class="calc-label">Tổng RAM cần (GB)</span>
+        <input class="calc-input" type="number" id="totalRAM" value="512" min="1"></div>
+      <div class="calc-row"><span class="calc-label">pCores / host</span>
+        <input class="calc-input" type="number" id="clCores" value="32" min="1"></div>
+      <div class="calc-row"><span class="calc-label">RAM / host (GB)</span>
+        <input class="calc-input" type="number" id="clRAM" value="256" min="1"></div>
+      <div class="calc-row"><span class="calc-label">HA Policy</span>
+        <select class="calc-select" id="haPolicy">
+          <option value="1">N+1 (1 host failure)</option>
+          <option value="2">N+2 (2 host failures)</option></select></div>
+      <button class="calc-btn" onclick="calcCluster()">Tính cluster</button>
+      <div class="result-box" id="clusterResult"></div>`,
+  },
+
+  // ── VM STORAGE ──
+  'vm-storage': {
+    title: 'VM Storage Estimator',
+    subtitle: 'Ước tính dung lượng datastore cần thiết',
+    html: `
+      <div class="calc-row"><span class="calc-label">Số VMs</span>
+        <input class="calc-input" type="number" id="stVMs" value="20" min="1"></div>
+      <div class="calc-row"><span class="calc-label">Disk / VM (GB, avg)</span>
+        <input class="calc-input" type="number" id="stDisk" value="100" min="1"></div>
+      <div class="calc-row"><span class="calc-label">Snapshot overhead (%)</span>
+        <input class="calc-input" type="number" id="stSnap" value="20" min="0" max="100"></div>
+      <div class="calc-row"><span class="calc-label">Thin provision ratio (%)</span>
+        <input class="calc-input" type="number" id="stThin" value="60" min="10" max="100"></div>
+      <button class="calc-btn" onclick="calcStorage()">Tính storage</button>
+      <div class="result-box" id="storageResult"></div>`,
+  },
+
+  // ── VM LINKS ──
+  'vm-links': {
+    title: 'VMware / Broadcom Portals',
+    subtitle: 'Quick links tới trang chính thức Broadcom / VMware',
+    html: `<div class="links-grid">
+      ${[
+        ['Broadcom Customer Portal','https://support.broadcom.com','Download, License, Support','#69b32e'],
+        ['VMware Compatibility Guide','https://www.vmware.com/resources/compatibility/search.php','HCL kiểm tra phần cứng tương thích','#69b32e'],
+        ['VMware Docs','https://docs.vmware.com','Tài liệu kỹ thuật chính thức','#69b32e'],
+        ['vSphere Release Notes','https://docs.vmware.com/en/VMware-vSphere/index.html','Changelogs và release info','#69b32e'],
+        ['VMware KB','https://kb.vmware.com','Knowledge Base articles','#69b32e'],
+        ['VMware Product Lifecycle','https://lifecycle.vmware.com','End of Life / End of Support','#69b32e'],
+        ['VMware Communities','https://community.broadcom.com','Forum kỹ thuật','#69b32e'],
+      ].map(([name,url,desc,color])=>`
+        <a class="link-item" href="${url}" target="_blank">
+          <div class="link-item-left">
+            <div class="link-dot" style="background:${color}"></div>
+            <div><div class="link-name">${name}</div><div class="link-url">${desc}</div></div>
+          </div>
+          <span class="link-arrow-r">↗</span>
+        </a>`).join('')}
+    </div>`,
+  },
+
+  // ── VEEAM REPO ──
+  'veeam-repo': {
+    title: 'Veeam Backup Repository Sizing',
+    subtitle: 'Tính dung lượng repo theo best practices của Veeam',
+    html: `
+      <div class="calc-row"><span class="calc-label">Tổng dữ liệu nguồn (GB)</span>
+        <input class="calc-input" type="number" id="vSrc" value="2000" min="1"></div>
+      <div class="calc-row"><span class="calc-label">Daily change rate (%)</span>
+        <input class="calc-input" type="number" id="vChange" value="5" min="1" max="50"></div>
+      <div class="calc-row"><span class="calc-label">Retention (ngày)</span>
+        <input class="calc-input" type="number" id="vRetention" value="14" min="1"></div>
+      <div class="calc-row"><span class="calc-label">Tỉ lệ nén / dedup (x)</span>
+        <select class="calc-select" id="vDedup">
+          <option value="1">1x (Không nén)</option>
+          <option value="1.5">1.5x (Low)</option>
+          <option value="2" selected>2x (Medium)</option>
+          <option value="3">3x (High)</option></select></div>
+      <button class="calc-btn" onclick="calcVeeamRepo()">Tính Repository</button>
+      <div class="result-box" id="veeamRepoResult"></div>`,
+  },
+
+  // ── VEEAM PROXY ──
+  'veeam-proxy': {
+    title: 'Veeam Proxy Server Sizing',
+    subtitle: 'Số proxy cần thiết theo số VMs và backup window',
+    html: `
+      <div class="calc-row"><span class="calc-label">Số VMs cần backup</span>
+        <input class="calc-input" type="number" id="proxyVMs" value="100" min="1"></div>
+      <div class="calc-row"><span class="calc-label">Backup window (giờ)</span>
+        <input class="calc-input" type="number" id="proxyWindow" value="8" min="1" max="24"></div>
+      <div class="calc-row"><span class="calc-label">Avg VM size (GB)</span>
+        <input class="calc-input" type="number" id="proxyVMSize" value="100" min="1"></div>
+      <div class="calc-row"><span class="calc-label">Network speed (Mbps)</span>
+        <input class="calc-input" type="number" id="proxyBW" value="1000" min="10"></div>
+      <button class="calc-btn" onclick="calcVeeamProxy()">Tính Proxies</button>
+      <div class="result-box" id="veeamProxyResult"></div>`,
+  },
+
+  // ── VEEAM RPO ──
+  'veeam-rpo': {
+    title: 'RPO / RTO Estimator',
+    subtitle: 'Ước tính RPO và RTO dựa trên backup schedule',
+    html: `
+      <div class="calc-row"><span class="calc-label">Tần suất backup</span>
+        <select class="calc-select" id="rpoFreq">
+          <option value="1">Mỗi giờ</option>
+          <option value="4">Mỗi 4 giờ</option>
+          <option value="8" selected>Mỗi 8 giờ</option>
+          <option value="24">Hàng ngày</option></select></div>
+      <div class="calc-row"><span class="calc-label">Kích thước dữ liệu (GB)</span>
+        <input class="calc-input" type="number" id="rtoSize" value="500" min="1"></div>
+      <div class="calc-row"><span class="calc-label">Tốc độ restore (MB/s)</span>
+        <input class="calc-input" type="number" id="rtoSpeed" value="200" min="10"></div>
+      <button class="calc-btn" onclick="calcRPO()">Ước tính RPO/RTO</button>
+      <div class="result-box" id="rpoResult"></div>`,
+  },
+
+  // ── VEEAM LINKS ──
+  'veeam-links': {
+    title: 'Veeam Portals & Resources',
+    subtitle: 'Quick links tới trang chính thức Veeam',
+    html: `<div class="links-grid">
+      ${[
+        ['My Veeam Portal','https://my.veeam.com','License, downloads, support cases','#00a34d'],
+        ['Veeam Help Center','https://www.veeam.com/documentation-guides-datasheets.html','Docs & User Guides','#00a34d'],
+        ['Veeam KB','https://www.veeam.com/knowledge-base.html','Knowledge Base articles','#00a34d'],
+        ['Veeam Best Practices','https://bp.veeam.com','Hướng dẫn triển khai tối ưu','#00a34d'],
+        ['Veeam Community','https://community.veeam.com','Forum kỹ thuật','#00a34d'],
+        ['Veeam Sizing Calculator','https://calculator.veeam.com','Calculator chính thức từ Veeam','#00a34d'],
+        ['Veeam Product Lifecycle','https://www.veeam.com/product-lifecycle.html','End of Life thông tin','#00a34d'],
+      ].map(([name,url,desc,color])=>`
+        <a class="link-item" href="${url}" target="_blank">
+          <div class="link-item-left">
+            <div class="link-dot" style="background:${color}"></div>
+            <div><div class="link-name">${name}</div><div class="link-url">${desc}</div></div>
+          </div>
+          <span class="link-arrow-r">↗</span>
+        </a>`).join('')}
+    </div>`,
+  },
+
+  // ── SUBNET ──
+  'gen-subnet': {
+    title: 'Subnet / CIDR Calculator',
+    subtitle: 'Tính thông tin mạng từ IP và prefix',
+    html: `
+      <div class="calc-row"><span class="calc-label">IP Address</span>
+        <input class="calc-input" type="text" id="subIP" value="192.168.1.0" placeholder="192.168.1.0"></div>
+      <div class="calc-row"><span class="calc-label">Prefix (CIDR)</span>
+        <input class="calc-input" type="number" id="subPrefix" value="24" min="1" max="32"></div>
+      <button class="calc-btn" onclick="calcSubnet()">Tính Subnet</button>
+      <div class="result-box" id="subnetResult"></div>`,
+  },
+
+  // ── RAID ──
+  'gen-raid': {
+    title: 'RAID Capacity Calculator',
+    subtitle: 'Dung lượng thực tế sau RAID overhead',
+    html: `
+      <div class="calc-row"><span class="calc-label">Số ổ đĩa</span>
+        <input class="calc-input" type="number" id="raidDisks" value="6" min="1"></div>
+      <div class="calc-row"><span class="calc-label">Dung lượng / ổ (GB)</span>
+        <input class="calc-input" type="number" id="raidDiskSize" value="4096" min="1"></div>
+      <div class="calc-row"><span class="calc-label">RAID Level</span>
+        <select class="calc-select" id="raidLevel">
+          <option value="0">RAID 0</option>
+          <option value="1">RAID 1</option>
+          <option value="5" selected>RAID 5</option>
+          <option value="6">RAID 6</option>
+          <option value="10">RAID 10</option></select></div>
+      <button class="calc-btn" onclick="calcRAID()">Tính RAID</button>
+      <div class="result-box" id="raidResult"></div>`,
+  },
+
+  // ── BANDWIDTH ──
+  'gen-bandwidth': {
+    title: 'Bandwidth / Transfer Time',
+    subtitle: 'Tính thời gian truyền file theo băng thông',
+    html: `
+      <div class="calc-row"><span class="calc-label">Kích thước dữ liệu (GB)</span>
+        <input class="calc-input" type="number" id="bwSize" value="100" min="0.001" step="0.1"></div>
+      <div class="calc-row"><span class="calc-label">Băng thông (Mbps)</span>
+        <input class="calc-input" type="number" id="bwSpeed" value="1000" min="1"></div>
+      <div class="calc-row"><span class="calc-label">Hiệu suất thực tế (%)</span>
+        <input class="calc-input" type="number" id="bwEff" value="70" min="10" max="100"></div>
+      <button class="calc-btn" onclick="calcBW()">Tính</button>
+      <div class="result-box" id="bwResult"></div>`,
+  },
+};
+
+// ════════════ CALCULATOR LOGIC ════════════
+
+function showResult(id, lines) {
+  const el = document.getElementById(id);
+  el.innerHTML = lines.map(([k,v,total])=>
+    `<div class="result-line${total?' total':''}">`+
+    `<span>${k}</span><span style="color:${total?'var(--accent-cyan)':'var(--text)'}">${v}</span></div>`
+  ).join('');
+  el.classList.add('show');
+}
+
+// MS CAL
+function calcCAL() {
+  const type = document.getElementById('calType').value;
+  const qty  = +document.getElementById('calQty').value;
+  const ver  = document.getElementById('calVer').value;
+  const price = {user:35, device:28}[type];
+  showResult('calResult',[
+    ['Loại CAL', type.toUpperCase()+' CAL'],
+    ['Phiên bản', 'Windows Server '+ver],
+    ['Số lượng cần', fmt(qty)+' CALs'],
+    ['Chi phí ước tính (USD)', '$'+fmt(qty*price), true],
+  ]);
+}
+
+// MS SQL
+function calcSQL() {
+  const s = +document.getElementById('sqlServers').value;
+  const c = +document.getElementById('sqlCores').value;
+  const ed = document.getElementById('sqlEd').value;
+  const corePerServer = Math.max(c, 4);
+  const totalCores = s * corePerServer;
+  const packPrice = ed==='enterprise' ? 7128 : 1586;
+  const packs = Math.ceil(totalCores / 2);
+  showResult('sqlResult',[
+    ['Servers', s],
+    ['Cores / server (licensed min 4)', corePerServer],
+    ['Tổng core licenses cần', totalCores],
+    ['Core packs cần (x2 cores)', packs],
+    ['Edition', ed.charAt(0).toUpperCase()+ed.slice(1)],
+    ['Chi phí ước tính (USD)', '$'+fmt(packs*packPrice), true],
+  ]);
+}
+
+// M365
+function calcM365() {
+  const u = +document.getElementById('m365Users').value;
+  const p = +document.getElementById('m365Plan').value;
+  const monthly = u*p;
+  const annual  = monthly*12;
+  showResult('m365Result',[
+    ['Users', fmt(u)],
+    ['Giá / user / tháng', '$'+p],
+    ['Chi phí / tháng (USD)', '$'+fmt(monthly)],
+    ['Chi phí / năm (USD)', '$'+fmt(annual), true],
+  ]);
+}
+
+// RAM estimator
+function calcRAM() {
+  const ad  = +document.getElementById('ramAD').value;
+  const dns = +document.getElementById('ramDNS').value;
+  const iis = +document.getElementById('ramIIS').value;
+  const fs  = +document.getElementById('ramFS').value;
+  const hv  = +document.getElementById('ramHV').value;
+  const fsRam = Math.ceil(fs/50);
+  const hvOverhead = Math.ceil(hv * 0.1);
+  const base = 4;
+  const total = base+ad+dns+iis+fsRam+hv+hvOverhead;
+  const rec = Math.pow(2, Math.ceil(Math.log2(total)));
+  showResult('ramResult',[
+    ['Base OS', base+' GB'],
+    ['Active Directory', ad+' GB'],
+    ['DNS/DHCP', dns+' GB'],
+    ['IIS', iis+' GB'],
+    ['File Server ('+fs+' users)', fsRam+' GB'],
+    ['Hyper-V VMs', hv+' GB'],
+    ['HV Overhead (~10%)', hvOverhead+' GB'],
+    ['Tổng cần', total+' GB'],
+    ['Đề xuất mua (power of 2)', rec+' GB', true],
+  ]);
+}
+
+// RDS
+function calcRDS() {
+  const u = +document.getElementById('rdsUsers').value;
+  const load = document.getElementById('rdsLoad').value;
+  const [vcpu, ram, disk] = {light:[0.5,1.5,20], medium:[1,2,30], heavy:[2,4,50]}[load];
+  showResult('rdsResult',[
+    ['Concurrent users', fmt(u)],
+    ['Workload', load],
+    ['vCPU cần (tổng)', Math.ceil(u*vcpu)],
+    ['RAM cần (GB)', Math.ceil(u*ram)+' GB'],
+    ['Disk profiles (GB)', Math.ceil(u*disk)+' GB', true],
+  ]);
+}
+
+// vCPU
+function calcCPU() {
+  const pc = +document.getElementById('pcpu').value;
+  const r  = +document.getElementById('ratio').value;
+  const vPerVM = +document.getElementById('vcpuPerVM').value;
+  const hosts  = +document.getElementById('numHosts').value;
+  const totalvCPU = pc * r * hosts;
+  const vms = Math.floor(totalvCPU / vPerVM);
+  showResult('cpuResult',[
+    ['Physical cores (tổng cluster)', pc*hosts],
+    ['Total vCPUs available', totalvCPU],
+    ['VMs có thể chạy', fmt(vms)+' VMs'],
+    ['vCPU còn dư (HA buffer)', fmt(totalvCPU - vms*vPerVM), true],
+  ]);
+}
+
+// ESXi Mem
+function calcMem() {
+  const vms = +document.getElementById('vmCount').value;
+  const ramVM = +document.getElementById('ramPerVM').value;
+  const oh = +document.getElementById('overhead').value;
+  const vmk = +document.getElementById('vmkReserve').value;
+  const vmRam = vms * ramVM;
+  const ohTotal = (vms * oh) / 1024;
+  const total = vmRam + ohTotal + vmk;
+  const rec = Math.pow(2, Math.ceil(Math.log2(total)));
+  showResult('memResult',[
+    ['RAM cho VMs', vmRam+' GB'],
+    ['VMkernel overhead ('+oh+'MB×'+vms+')', ohTotal.toFixed(1)+' GB'],
+    ['VMkernel reserve', vmk+' GB'],
+    ['Tổng cần', total.toFixed(1)+' GB'],
+    ['Đề xuất mua (power of 2)', rec+' GB', true],
+  ]);
+}
+
+// Cluster
+function calcCluster() {
+  const tvcpu = +document.getElementById('totalVCPU').value;
+  const tram  = +document.getElementById('totalRAM').value;
+  const cc    = +document.getElementById('clCores').value;
+  const cr    = +document.getElementById('clRAM').value;
+  const ha    = +document.getElementById('haPolicy').value;
+  const byVCPU = Math.ceil(tvcpu/(cc*6)) + ha;
+  const byRAM  = Math.ceil(tram/cr) + ha;
+  const needed = Math.max(byVCPU, byRAM);
+  showResult('clusterResult',[
+    ['Hosts cần cho vCPU', byVCPU],
+    ['Hosts cần cho RAM', byRAM],
+    ['HA failover hosts', ha],
+    ['Hosts đề xuất', needed, true],
+  ]);
+}
+
+// VM Storage
+function calcStorage() {
+  const vms  = +document.getElementById('stVMs').value;
+  const disk = +document.getElementById('stDisk').value;
+  const snap = +document.getElementById('stSnap').value;
+  const thin = +document.getElementById('stThin').value;
+  const raw = vms * disk;
+  const withSnap = raw * (1 + snap/100);
+  const usable = withSnap * (thin/100);
+  showResult('storageResult',[
+    ['Raw provisioned', gb(raw)],
+    ['+ Snapshot overhead ('+snap+'%)', gb(raw*snap/100)],
+    ['Thin provision saving ('+thin+'%)', '-'+gb(raw*(1-thin/100))],
+    ['Datastore cần thiết', gb(usable), true],
+  ]);
+}
+
+// Veeam Repo
+function calcVeeamRepo() {
+  const src     = +document.getElementById('vSrc').value;
+  const change  = +document.getElementById('vChange').value;
+  const ret     = +document.getElementById('vRetention').value;
+  const dedup   = +document.getElementById('vDedup').value;
+  const daily   = src * change/100;
+  const total   = (src + daily*ret) / dedup;
+  const withBuf = total * 1.2;
+  showResult('veeamRepoResult',[
+    ['Dữ liệu nguồn', gb(src)],
+    ['Daily change ('+change+'%)', gb(daily)],
+    ['Increments ('+ret+' ngày)', gb(daily*ret)],
+    ['Sau dedup/compress ('+dedup+'x)', gb(total)],
+    ['+ 20% buffer', gb(withBuf), true],
+  ]);
+}
+
+// Veeam Proxy
+function calcVeeamProxy() {
+  const vms    = +document.getElementById('proxyVMs').value;
+  const win    = +document.getElementById('proxyWindow').value;
+  const size   = +document.getElementById('proxyVMSize').value;
+  const bw     = +document.getElementById('proxyBW').value * 0.125; // Mbps→MB/s
+  const totalData = vms * size * 1024; // MB
+  const winSec = win * 3600;
+  const reqMBs = totalData / winSec;
+  const proxies = Math.ceil(reqMBs / (bw * 0.7));
+  showResult('veeamProxyResult',[
+    ['Tổng dữ liệu cần xử lý', gb(vms*size)],
+    ['Throughput cần (MB/s)', reqMBs.toFixed(1)+' MB/s'],
+    ['Throughput / proxy (~70%)', (bw*0.7).toFixed(1)+' MB/s'],
+    ['Số proxy đề xuất', proxies+' proxies', true],
+  ]);
+}
+
+// RPO/RTO
+function calcRPO() {
+  const freq  = +document.getElementById('rpoFreq').value;
+  const size  = +document.getElementById('rtoSize').value;
+  const speed = +document.getElementById('rtoSpeed').value;
+  const rtoSec = (size * 1024) / speed;
+  const rtoMin = Math.ceil(rtoSec / 60);
+  const rtoH   = (rtoMin/60).toFixed(1);
+  showResult('rpoResult',[
+    ['RPO (max data loss)', freq+' giờ'],
+    ['Kích thước dữ liệu', gb(size)],
+    ['Tốc độ restore', speed+' MB/s'],
+    ['RTO ước tính (phút)', fmt(rtoMin)+' phút'],
+    ['RTO ước tính (giờ)', rtoH+' giờ', true],
+  ]);
+}
+
+// SUBNET
+function calcSubnet() {
+  const ipStr = document.getElementById('subIP').value.trim();
+  const prefix = +document.getElementById('subPrefix').value;
+  const parts = ipStr.split('.').map(Number);
+  if (parts.length!==4||parts.some(p=>isNaN(p)||p<0||p>255)||prefix<1||prefix>32) {
+    document.getElementById('subnetResult').innerHTML='<span style="color:#ff7a2f">IP không hợp lệ</span>';
+    document.getElementById('subnetResult').classList.add('show'); return;
+  }
+  const ipNum = parts.reduce((a,b)=>(a<<8)+b,0)>>>0;
+  const mask = prefix===0?0:(0xFFFFFFFF<<(32-prefix))>>>0;
+  const network = (ipNum & mask)>>>0;
+  const broadcast = (network | ~mask)>>>0;
+  const hosts = prefix>=31?0:broadcast-network-1;
+  function toIP(n){return [(n>>>24)&255,(n>>>16)&255,(n>>>8)&255,n&255].join('.');}
+  showResult('subnetResult',[
+    ['Network Address', toIP(network)+'/'+prefix],
+    ['Subnet Mask', toIP(mask)],
+    ['First Host', prefix>=31?'N/A':toIP(network+1)],
+    ['Last Host', prefix>=31?'N/A':toIP(broadcast-1)],
+    ['Broadcast', toIP(broadcast)],
+    ['Usable Hosts', fmt(hosts)+' hosts', true],
+  ]);
+}
+
+// RAID
+function calcRAID() {
+  const d = +document.getElementById('raidDisks').value;
+  const s = +document.getElementById('raidDiskSize').value;
+  const l = document.getElementById('raidLevel').value;
+  let usable=0, fault=0;
+  if(l==='0'){usable=d*s;fault=0;}
+  else if(l==='1'){usable=Math.floor(d/2)*s;fault=1;}
+  else if(l==='5'){usable=(d-1)*s;fault=1;}
+  else if(l==='6'){usable=(d-2)*s;fault=2;}
+  else if(l==='10'){usable=Math.floor(d/2)*s;fault=1;}
+  showResult('raidResult',[
+    ['RAID Level', 'RAID '+l],
+    ['Số ổ đĩa', d],
+    ['Raw capacity', gb(d*s)],
+    ['Overhead (parity/mirror)', gb(d*s-usable)],
+    ['Fault tolerance', fault+' ổ'],
+    ['Usable capacity', gb(usable), true],
+  ]);
+}
+
+// BW
+function calcBW() {
+  const size  = +document.getElementById('bwSize').value;
+  const speed = +document.getElementById('bwSpeed').value; // Mbps
+  const eff   = +document.getElementById('bwEff').value;
+  const effectiveMBs = (speed * eff/100) / 8;
+  const totalMB = size * 1024;
+  const seconds = totalMB / effectiveMBs;
+  const minutes = seconds / 60;
+  const hours = minutes / 60;
+  showResult('bwResult',[
+    ['Dữ liệu cần truyền', gb(size*1024)],
+    ['Băng thông danh nghĩa', fmt(speed)+' Mbps'],
+    ['Hiệu suất thực ('+eff+'%)', effectiveMBs.toFixed(1)+' MB/s'],
+    ['Thời gian (giây)', fmt(Math.ceil(seconds))+' s'],
+    ['Thời gian (phút)', minutes.toFixed(1)+' phút'],
+    ['Thời gian (giờ)', hours.toFixed(2)+' giờ', true],
+  ]);
+}
+</script>
+</body>
+</html>
